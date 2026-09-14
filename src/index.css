@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/* Тёмная тема TrackCheck: токены цветов для утилит Tailwind v4 */
+@theme {
+  --color-ink: #0a0d14;    /* фон страницы */
+  --color-panel: #121722;  /* карточки */
+  --color-panel2: #0e131d; /* поля ввода, внутренние блоки */
+  --color-line: #222b3d;   /* границы */
+  --color-fog: #8b96ab;    /* приглушённый текст */
+  --color-snow: #e8ecf4;   /* основной текст */
+  --color-acc: #6c5ce7;    /* фиолетовый акцент */
+  --color-acc2: #00cec9;   /* бирюзовый акцент */
+  --color-bad: #ff5c6c;    /* вердикт 🔴 */
+  --color-warn: #ffc94d;   /* вердикт 🟡 */
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--color-snow);
+  background-color: var(--color-ink);
+  background-image:
+    radial-gradient(1100px 550px at 85% -10%, rgb(108 92 231 / 0.16), transparent 60%),
+    radial-gradient(900px 500px at -15% 110%, rgb(0 206 201 / 0.1), transparent 55%);
+}
+
+::selection {
+  background: rgb(108 92 231 / 0.45);
+}

@@ -1,0 +1,45 @@
+# ═══════════════════════════════════════════════════════════════
+#  TrackCheck v2 — конфигурация деплоя на Netlify
+# ═══════════════════════════════════════════════════════════════
+#  Стек: React + Vite + TailwindCSS v4 + TypeScript
+#  Структура:
+#    src/                       — клиент (вся тяжёлая обработка в браузере)
+#    netlify/functions/check.py    — проверка прав (iTunes + Deezer, Python, stdlib)
+#    netlify/functions/identify.ts — распознавание по звуку (AudD-прокси, Node 20)
+#
+#  Деплой:
+#    1. Залейте репозиторий на GitHub → Netlify → Add new site → Import from Git
+#    2. Build command и Publish directory подтянутся из этого файла
+#    3. Site configuration → Environment variables → AUDD_API_TOKEN (https://audd.io)
+#    4. Deploy
+# ═══════════════════════════════════════════════════════════════
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"      # runtime для identify.ts и для сборки Vite
+  PYTHON_VERSION = "3.12"  # runtime для check.py
+
+# Красивый и стабильный URL для функций:
+#   /api/check    → /.netlify/functions/check
+#   /api/identify → /.netlify/functions/identify
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Распознавание может идти до ~20 с (загрузка фрагмента в AudD + ответ):
+# поднимаем таймаут функции выше дефолтных 10 с
+[functions."identify"]
+  timeout = 30
+
+# Минимальные заголовки безопасности
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
